@@ -1,0 +1,5 @@
+export type Finding = {title:string; severity:string; cwe?:string; summary:string; impact:string; reproduction:string[]; evidence:string[]; remediation:string; status:"unverified"|"verified"};
+export function markdownReport(target:string,program:string,findings:Finding[]) {
+ const clean=(s:string)=>s.replace(/[\r\n]+/g," ").slice(0,3000);
+ return `# CyberHunterLab — Relatório Bug Bounty\n\n**Alvo:** ${clean(target)}\n\n**Programa:** ${clean(program)}\n\n**Aviso:** somente testes autorizados; revisar escopo e evidências antes da submissão.\n\n`+findings.map((f,i)=>`## ${i+1}. ${clean(f.title)}\n\n- Severidade sugerida: ${clean(f.severity)}\n- CWE: ${clean(f.cwe||"A determinar")}\n- Estado: ${f.status === "verified" ? "Validado pelo pesquisador" : "Não verificado"}\n\n### Resumo\n${clean(f.summary)}\n\n### Impacto\n${clean(f.impact)}\n\n### Reprodução autorizada\n${f.reproduction.map(x=>`- ${clean(x)}`).join("\n")}\n\n### Evidências\n${f.evidence.map(x=>`- ${clean(x)}`).join("\n")}\n\n### Correção\n${clean(f.remediation)}\n\n`).join("\n");
+}
